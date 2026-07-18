@@ -73,7 +73,7 @@ export default function MenuPage(){
 
         await fetch(
 
-          "http://localhost:3001/menu/recommend",
+          "https://smart-fridge-99dz.onrender.com/menu/recommend",
 
           {
 
