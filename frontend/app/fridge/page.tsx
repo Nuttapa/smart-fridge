@@ -46,12 +46,15 @@ async function loadData(){
   try{
 
     const res = await fetch(
-      "http://localhost:3001/ingredients"
-    );
+        "https://smart-fridge-99dz.onrender.com/ingredients",
+        {
+            cache: "no-store"
+        }
+        );
 
-    const data = await res.json();
+        const data = await res.json();
 
-    console.log("INGREDIENTS:", data);
+        console.log("DATA FROM RENDER:", data);
 
 
     setIngredients(
@@ -73,8 +76,11 @@ async function loadData(){
 
 
     const expRes = await fetch(
-      "https://smart-fridge-99dz.onrender.com/ingredients/expiring"
-    );
+        "https://smart-fridge-99dz.onrender.com/ingredients/expiring",
+        {
+            cache: "no-store"
+        }
+        );
 
 
     const expData = await expRes.json();
@@ -109,94 +115,85 @@ async function loadData(){
 }
 
 
-
-
-
-
-
-
-
 async function saveIngredient(){
 
+  const body = {
+
+    name,
+
+    quantity:Number(quantity),
+
+    unit,
+
+    category,
+
+    expiryDate
+
+  };
 
 
-const body = {
-
-name,
-
-quantity:Number(quantity),
-
-unit,
-
-category,
-
-expiryDate
-
-};
+  try{
 
 
+    if(editId){
 
 
+      await fetch(
 
-if(editId){
+        `https://smart-fridge-99dz.onrender.com/ingredients/${editId}`,
+
+        {
+
+          method:"PUT",
+
+          headers:{
+            "Content-Type":"application/json"
+          },
+
+          body:JSON.stringify(body)
+
+        }
+
+      );
 
 
-await fetch(
+    }else{
 
-`https://smart-fridge-99dz.onrender.com/ingredients,
 
-{
+      await fetch(
 
-method:"PUT",
+        "https://smart-fridge-99dz.onrender.com/ingredients",
 
-headers:{
-"Content-Type":"application/json"
-},
+        {
 
-body:JSON.stringify(body)
+          method:"POST",
+
+          headers:{
+            "Content-Type":"application/json"
+          },
+
+          body:JSON.stringify(body)
+
+        }
+
+      );
+
+
+    }
+
+
+    clearForm();
+
+    loadData();
+
+
+  }catch(error){
+
+    console.error(error);
+
+  }
 
 }
-
-);
-
-
-
-}else{
-
-
-
-await fetch(
-
-"http://localhost:3001/ingredients",
-
-{
-
-method:"POST",
-
-headers:{
-"Content-Type":"application/json"
-},
-
-body:JSON.stringify(body)
-
-}
-
-);
-
-
-
-}
-
-
-
-clearForm();
-
-loadData();
-
-
-}
-
-
 
 
 
@@ -259,7 +256,7 @@ async function deleteIngredient(id:string){
 
 await fetch(
 
-`http://localhost:3001/ingredients/${id}`,
+`https://smart-fridge-99dz.onrender.com/ingredients/${id}`,
 
 {
 
