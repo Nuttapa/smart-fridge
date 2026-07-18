@@ -1,382 +1,119 @@
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Request } from 'express';
 
-import { Ingredient, IngredientDocument } from './schema/ingredient.schema';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Req,
+  UseGuards
+} from '@nestjs/common';
 
+import { IngredientService } from './ingredient.service';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
+interface AuthRequest extends Request {
+  user: {
+    userId: string;
+  };
+}
 
-@Injectable()
-export class IngredientService {
+@Controller('ingredients')
+@UseGuards(JwtAuthGuard)
+export class IngredientController {
 
 
   constructor(
-
-    @InjectModel(Ingredient.name)
-
-    private ingredientModel: Model<IngredientDocument>,
-
+    private readonly ingredientService: IngredientService
   ) {}
 
 
 
-
-
-  async getIngredients(
-    userId:string
-  ) {
-
-
-    return this.ingredientModel.find({
-      userId
-    });
-
-
-  }
-
-
-
-
-
-
-
-
-
-  async addIngredient(
-
-    ingredient:any,
-
-    userId:string
-
-  ) {
-
-
-
-    ingredient.userId = userId;
-
-
-
-    if(ingredient.expiryDate){
-
-      ingredient.expiryDate =
-        new Date(ingredient.expiryDate);
-
-    }
-
-
-
-
-
-    const newIngredient =
-      new this.ingredientModel(ingredient);
-
-
-
-    return newIngredient.save();
-
-
-  }
-
-
-
-
-
-
-
-
-
-  async deleteIngredient(
-
-    id:string,
-
-    userId:string
-
+  @Get()
+  getIngredients(
+    @Req() req: AuthRequest
   ){
 
-
-
-    return this.ingredientModel.findOneAndDelete({
-
-      _id:id,
-
-      userId
-
-    });
-
+    return this.ingredientService.getIngredients(
+      req.user.userId
+    );
 
   }
 
 
 
-
-
-
-
-
-
-  async updateIngredient(
-
-    id:string,
-
-    data:any,
-
-    userId:string
-
+  @Get("expiring")
+  getExpiringIngredients(
+    @Req() req: AuthRequest
   ){
 
+    return this.ingredientService.getExpiringIngredients(
+      req.user.userId
+    );
 
-
-    if(data.expiryDate){
-
-
-      data.expiryDate =
-        new Date(data.expiryDate);
-
-
-    }
+  }
 
 
 
+  @Get("expired")
+  getExpiredIngredients(
+    @Req() req: AuthRequest
+  ){
+
+    return this.ingredientService.getExpiredIngredients(
+      req.user.userId
+    );
+
+  }
 
 
-    return this.ingredientModel.findOneAndUpdate(
+
+  @Post()
+  addIngredient(
+    @Body() ingredient:any,
+    @Req() req: AuthRequest
+  ){
+
+    return this.ingredientService.addIngredient(
+      ingredient,
+      req.user.userId
+    );
+
+  }
 
 
-      {
 
-        _id:id,
+  @Put(":id")
+  updateIngredient(
+    @Param("id") id:string,
+    @Body() data:any,
+    @Req() req: AuthRequest
+  ){
 
-        userId
-
-      },
-
-
+    return this.ingredientService.updateIngredient(
+      id,
       data,
-
-
-      {
-
-        returnDocument:"after"
-
-      }
-
-
+      req.user.userId
     );
-
 
   }
 
 
 
-
-
-
-
-
-
-  // ของหมดอายุ + ใกล้หมดอายุภายใน 3 วัน
-
-  async getExpiringIngredients(
-
-    userId:string
-
+  @Delete(":id")
+  deleteIngredient(
+    @Param("id") id:string,
+    @Req() req: AuthRequest
   ){
 
-
-
-    const ingredients =
-
-      await this.ingredientModel.find({
-
-        userId
-
-      });
-
-
-
-
-
-    const today =
-
-      new Date();
-
-
-
-    today.setHours(
-      0,
-      0,
-      0,
-      0
+    return this.ingredientService.deleteIngredient(
+      id,
+      req.user.userId
     );
 
-
-
-
-
-
-
-
-    return ingredients.filter((item)=>{
-
-
-
-      if(!item.expiryDate){
-
-        return false;
-
-      }
-
-
-
-
-
-      const expiry =
-
-        new Date(item.expiryDate);
-
-
-
-
-      expiry.setHours(
-        0,
-        0,
-        0,
-        0
-      );
-
-
-
-
-
-      const diff =
-
-        Math.ceil(
-
-          (
-
-            expiry.getTime()
-
-            -
-
-            today.getTime()
-
-          )
-
-          /
-
-          (1000 * 60 * 60 * 24)
-
-        );
-
-
-
-
-
-
-      return diff <= 3;
-
-
-
-    });
-
-
-
   }
-
-
-
-
-
-
-
-
-
-  // ของหมดอายุแล้ว
-
-  async getExpiredIngredients(
-
-    userId:string
-
-  ){
-
-
-
-    const ingredients =
-
-      await this.ingredientModel.find({
-
-        userId
-
-      });
-
-
-
-
-
-    const today =
-
-      new Date();
-
-
-
-    today.setHours(
-      0,
-      0,
-      0,
-      0
-    );
-
-
-
-
-
-
-
-    return ingredients.filter((item)=>{
-
-
-
-      if(!item.expiryDate){
-
-        return false;
-
-      }
-
-
-
-
-
-      const expiry =
-
-        new Date(item.expiryDate);
-
-
-
-
-      expiry.setHours(
-        0,
-        0,
-        0,
-        0
-      );
-
-
-
-
-
-
-      return expiry < today;
-
-
-
-    });
-
-
-
-  }
-
-
-
-
 
 }
