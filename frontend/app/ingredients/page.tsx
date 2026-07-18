@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
+import { useRouter } from "next/navigation";
 
 export default function IngredientsPage(){
 
+const router = useRouter();
 
 const [ingredients,setIngredients]
 =useState<any[]>([]);
@@ -41,36 +42,60 @@ const [editId,setEditId]
 
 useEffect(()=>{
 
-loadIngredients();
+  const token = localStorage.getItem("token");
 
-},[]);
+  if(!token){
+    router.push("/login");
+    return;
+  }
 
+  loadIngredients();
 
-
-
+},[router]);
 
 async function loadIngredients(){
 
+  try{
 
-const res =
-await fetch(
-"http://localhost:3001/ingredients"
-);
+    const token = localStorage.getItem("token");
+
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/ingredients`,
+      {
+        headers:{
+          Authorization:`Bearer ${token}`
+        }
+      }
+    );
 
 
-const data =
-await res.json();
+    const data = await res.json();
 
 
-setIngredients(data);
+    setIngredients(
 
+      Array.isArray(data)
+
+      ?
+
+      data
+
+      :
+
+      data.data ?? []
+
+    );
+
+
+  }catch(error){
+
+    console.error(error);
+
+    setIngredients([]);
+
+  }
 
 }
-
-
-
-
-
 
 
 async function saveIngredient(){
@@ -99,16 +124,16 @@ if(editId){
 
 await fetch(
 
-`http://localhost:3001/ingredients/${editId}`,
+`${process.env.NEXT_PUBLIC_API_URL}/ingredients/${editId}`,
 
 {
 
 method:"PUT",
 
 headers:{
-"Content-Type":"application/json"
+"Content-Type":"application/json",
+Authorization:`Bearer ${localStorage.getItem("token")}`
 },
-
 body:JSON.stringify(body)
 
 }
@@ -122,14 +147,15 @@ body:JSON.stringify(body)
 
 await fetch(
 
-"http://localhost:3001/ingredients",
+`${process.env.NEXT_PUBLIC_API_URL}/ingredients`,
 
 {
 
 method:"POST",
 
 headers:{
-"Content-Type":"application/json"
+"Content-Type":"application/json",
+Authorization:`Bearer ${localStorage.getItem("token")}`
 },
 
 body:JSON.stringify(body)
@@ -145,7 +171,7 @@ body:JSON.stringify(body)
 
 clearForm();
 
-loadIngredients();
+await loadIngredients();
 
 
 }
@@ -211,26 +237,25 @@ async function deleteIngredient(id:string){
 
 await fetch(
 
-`http://localhost:3001/ingredients/${id}`,
+`${process.env.NEXT_PUBLIC_API_URL}/ingredients/${id}`,
 
 {
 
-method:"DELETE"
+method:"DELETE",
+
+headers:{
+  Authorization:`Bearer ${localStorage.getItem("token")}`
+}
 
 }
 
 );
 
 
-
-loadIngredients();
+await loadIngredients();
 
 
 }
-
-
-
-
 
 
 

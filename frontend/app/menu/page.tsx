@@ -1,12 +1,28 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 
 export default function MenuPage(){
 
-
+  const router = useRouter();
   const [menu,setMenu] = useState<any>(null);
+
+
+  useEffect(()=>{
+
+    const token = localStorage.getItem("token");
+
+
+    if(!token){
+
+      router.push("/login");
+
+    }
+
+  },[]);
+
 
   const [loading,setLoading] = useState(false);
 
@@ -26,9 +42,17 @@ export default function MenuPage(){
 
       // ดึงวัตถุดิบในตู้เย็น
 
+      const token = localStorage.getItem("token");
+
+
       const ingredientRes =
         await fetch(
-          "https://smart-fridge-99dz.onrender.com/ingredients"
+          `${process.env.NEXT_PUBLIC_API_URL}/ingredients`,
+          {
+            headers:{
+              Authorization:`Bearer ${token}`
+            }
+          }
         );
 
 
@@ -73,7 +97,7 @@ export default function MenuPage(){
 
         await fetch(
 
-          "https://smart-fridge-99dz.onrender.com/menu/recommend",
+          `${process.env.NEXT_PUBLIC_API_URL}/menu/recommend`,
 
           {
 
@@ -81,7 +105,8 @@ export default function MenuPage(){
 
             headers:{
 
-              "Content-Type":"application/json"
+              "Content-Type":"application/json",
+              Authorization:`Bearer ${token}`
 
             },
 

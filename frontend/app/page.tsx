@@ -2,22 +2,35 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-
+import { useRouter } from "next/navigation";
 
 export default function Home(){
 
-
+  const router = useRouter();
   const [ingredients,setIngredients] = useState<any[]>([]);
   const [expiring,setExpiring] = useState<any[]>([]);
 
 
 
 
-  useEffect(()=>{
+ useEffect(()=>{
 
-    loadDashboard();
+  const token = localStorage.getItem("token");
 
-  },[]);
+
+  if(!token){
+
+    router.push("/login");
+
+    return;
+
+  }
+
+
+  loadDashboard();
+
+
+},[]);
 
 
 
@@ -29,11 +42,16 @@ export default function Home(){
     try{
 
 
+      const token = localStorage.getItem("token");
+
+
       const res = await fetch(
-        "https://smart-fridge-99dz.onrender.com/ingredients",
-        {
-          cache:"no-store"
+      `${process.env.NEXT_PUBLIC_API_URL}/ingredients`,
+      {
+        headers:{
+          Authorization:`Bearer ${token}`
         }
+      }
       );
 
       const data = await res.json();
@@ -60,8 +78,11 @@ export default function Home(){
 
 
       const expRes = await fetch(
-        "https://smart-fridge-99dz.onrender.com/ingredients/expiring",
+        `${process.env.NEXT_PUBLIC_API_URL}/ingredients/expiring`,
         {
+          headers:{
+            Authorization:`Bearer ${token}`
+          },
           cache:"no-store"
         }
       );
@@ -102,7 +123,13 @@ export default function Home(){
 
 
   }
+  function logout(){
 
+    localStorage.removeItem("token");
+
+    router.push("/login");
+
+  }
 
 
 
@@ -134,11 +161,21 @@ export default function Home(){
 
 
 
+        <div className="flex justify-between items-center">
+
         <h1 className="text-4xl font-bold">
-
           🧊 Smart Fridge Dashboard
-
         </h1>
+
+
+        <button
+          onClick={logout}
+          className="bg-red-500 text-white px-5 py-2 rounded-xl hover:bg-red-600"
+        >
+          ออกจากระบบ
+        </button>
+
+      </div>
 
 
         <p className="text-gray-600 mt-2">
