@@ -6,6 +6,9 @@ import { MongooseModule } from '@nestjs/mongoose';
 
 import { IngredientModule } from './ingredient/ingredient.module';
 import { MenuModule } from './menu/menu.module';
+import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
+
 
 
 @Module({
@@ -34,6 +37,10 @@ import { MenuModule } from './menu/menu.module';
     IngredientModule,
 
     MenuModule,
+
+    UsersModule,
+
+    AuthModule,
 
   ],
 

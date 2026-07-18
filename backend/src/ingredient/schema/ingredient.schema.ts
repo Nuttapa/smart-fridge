@@ -5,31 +5,32 @@ import { Document } from 'mongoose';
 export type IngredientDocument = Ingredient & Document;
 
 
-
 @Schema({
   timestamps:true
 })
 export class Ingredient {
 
 
+  @Prop({
+    required: true
+  })
+  userId!: string;
+
+
   @Prop()
   name!: string;
-
 
 
   @Prop()
   quantity!: number;
 
 
-
   @Prop()
   unit!: string;
 
 
-
   @Prop()
   expiryDate!: Date;
-
 
 
   @Prop()
@@ -37,7 +38,6 @@ export class Ingredient {
 
 
 }
-
 
 
 export const IngredientSchema =

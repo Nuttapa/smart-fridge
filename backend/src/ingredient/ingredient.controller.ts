@@ -1,8 +1,22 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Req,
+  UseGuards
+} from '@nestjs/common';
+
 import { IngredientService } from './ingredient.service';
+
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 
 @Controller('ingredients')
+@UseGuards(JwtAuthGuard)
 export class IngredientController {
 
 
@@ -13,9 +27,13 @@ export class IngredientController {
 
 
   @Get()
-  getIngredients(){
+  getIngredients(
+    @Req() req
+  ){
 
-    return this.ingredientService.getIngredients();
+    return this.ingredientService.getIngredients(
+      req.user.userId
+    );
 
   }
 
@@ -23,9 +41,13 @@ export class IngredientController {
 
 
   @Get("expiring")
-  getExpiringIngredients(){
+  getExpiringIngredients(
+    @Req() req
+  ){
 
-    return this.ingredientService.getExpiringIngredients();
+    return this.ingredientService.getExpiringIngredients(
+      req.user.userId
+    );
 
   }
 
@@ -33,22 +55,29 @@ export class IngredientController {
 
 
   @Get("expired")
-  getExpiredIngredients(){
+  getExpiredIngredients(
+    @Req() req
+  ){
 
-    return this.ingredientService.getExpiredIngredients();
+    return this.ingredientService.getExpiredIngredients(
+      req.user.userId
+    );
 
   }
 
 
 
 
-
   @Post()
   addIngredient(
-    @Body() ingredient:any
+    @Body() ingredient:any,
+    @Req() req
   ){
 
-    return this.ingredientService.addIngredient(ingredient);
+    return this.ingredientService.addIngredient(
+      ingredient,
+      req.user.userId
+    );
 
   }
 
@@ -59,12 +88,14 @@ export class IngredientController {
   @Put(":id")
   updateIngredient(
     @Param("id") id:string,
-    @Body() data:any
+    @Body() data:any,
+    @Req() req
   ){
 
     return this.ingredientService.updateIngredient(
       id,
-      data
+      data,
+      req.user.userId
     );
 
   }
@@ -75,10 +106,14 @@ export class IngredientController {
 
   @Delete(":id")
   deleteIngredient(
-    @Param("id") id:string
+    @Param("id") id:string,
+    @Req() req
   ){
 
-    return this.ingredientService.deleteIngredient(id);
+    return this.ingredientService.deleteIngredient(
+      id,
+      req.user.userId
+    );
 
   }
 

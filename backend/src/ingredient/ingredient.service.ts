@@ -19,9 +19,11 @@ export class IngredientService {
 
 
 
-  async getIngredients() {
+  async getIngredients(userId:string) {
 
-    return this.ingredientModel.find();
+    return this.ingredientModel.find({
+      userId:userId
+    });
 
   }
 
@@ -31,7 +33,13 @@ export class IngredientService {
 
 
 
-  async addIngredient(ingredient:any) {
+  async addIngredient(
+    ingredient:any,
+    userId:string
+  ) {
+
+
+    ingredient.userId = userId;
 
 
     if(ingredient.expiryDate){
@@ -42,14 +50,11 @@ export class IngredientService {
     }
 
 
-
     const newIngredient =
       new this.ingredientModel(ingredient);
 
 
-
     return newIngredient.save();
-
 
   }
 
@@ -60,11 +65,18 @@ export class IngredientService {
 
 
 
-  async deleteIngredient(id:string){
+  async deleteIngredient(
+    id:string,
+    userId:string
+  ){
 
+    return this.ingredientModel.findOneAndDelete({
 
-    return this.ingredientModel.findByIdAndDelete(id);
+      _id:id,
 
+      userId:userId
+
+    });
 
   }
 
@@ -78,7 +90,8 @@ export class IngredientService {
 
   async updateIngredient(
     id:string,
-    data:any
+    data:any,
+    userId:string
   ){
 
 
@@ -93,17 +106,20 @@ export class IngredientService {
 
 
 
-    return this.ingredientModel.findByIdAndUpdate(
+    return this.ingredientModel.findOneAndUpdate(
 
-      id,
+    {
+      _id:id,
+      userId:userId
+    },
 
-      data,
+    data,
 
-      {
-        returnDocument:"after"
-      }
+    {
+      returnDocument:"after"
+    }
 
-    );
+  );
 
 
   }
@@ -117,13 +133,16 @@ export class IngredientService {
 
 
   // ของหมดอายุ + ใกล้หมดอายุ ภายใน 3 วัน
-  async getExpiringIngredients(){
+  async getExpiringIngredients(
+    userId:string
+  ){
 
 
 
     const ingredients =
-      await this.ingredientModel.find();
-
+      await this.ingredientModel.find({
+        userId:userId
+      });
 
 
 
@@ -206,12 +225,16 @@ export class IngredientService {
 
 
   // ของหมดอายุแล้ว (เก็บไว้ใช้ในอนาคต)
-  async getExpiredIngredients(){
+  async getExpiredIngredients(
+      userId:string
+    ){
 
 
 
     const ingredients =
-      await this.ingredientModel.find();
+      await this.ingredientModel.find({
+        userId:userId
+        });
 
 
 
