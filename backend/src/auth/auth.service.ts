@@ -56,57 +56,63 @@ export class AuthService {
 
 
   async login(
-    email: string,
-    password: string,
-  ) {
+  email: string,
+  password: string,
+) {
 
-    const user =
-      await this.usersService.findByEmail(email);
+  console.log("LOGIN EMAIL =", email);
+  console.log("LOGIN PASSWORD =", password);
 
 
-    if (!user) {
+  const user =
+    await this.usersService.findByEmail(email);
 
-      throw new UnauthorizedException(
-        'Invalid email or password'
-      );
 
+  console.log("FOUND USER =", user);
+
+
+  if (!user) {
+
+    throw new UnauthorizedException(
+      'User not found'
+    );
+
+  }
+
+
+  const isMatch =
+    await bcrypt.compare(
+      password,
+      user.password
+    );
+
+
+  console.log("PASSWORD MATCH =", isMatch);
+
+
+  if (!isMatch) {
+
+    throw new UnauthorizedException(
+      'Password wrong'
+    );
+
+  }
+
+
+  const payload = {
+    sub:user._id.toString(),
+    email:user.email,
+  };
+
+
+  return {
+    access_token:this.jwtService.sign(payload),
+    user:{
+      id:user._id,
+      username:user.username,
+      email:user.email,
     }
-
-
-    const isMatch =
-      await bcrypt.compare(
-        password,
-        user.password
-      );
-
-
-    if (!isMatch) {
-
-      throw new UnauthorizedException(
-        'Invalid email or password'
-      );
-
-    }
-
-
-    const payload = {
-        sub: user._id.toString(),
-        email: user.email,
-        };
-
-
-    return {
-
-      access_token:
-        this.jwtService.sign(payload),
-
-      user: {
-        id: user._id,
-        username: user.username,
-        email: user.email,
-      }
-
-    };
+  };
 
   }
 

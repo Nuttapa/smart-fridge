@@ -59,17 +59,19 @@ useEffect(()=>{
     );
 
 
-    const data = await res.json();
+    const ingredientData = await res.json();
 
-    console.log("STATUS =", res.status);
-    console.log("DATA =", data);
-
-      const ingredientData = await res.json();
-
-console.log("INGREDIENT DATA =", ingredientData);
+console.log("STATUS =", res.status);
+console.log("DATA =", ingredientData);
 
 
-      setIngredients(
+if(!res.ok){
+  console.log("ERROR =", ingredientData);
+  return;
+}
+
+
+setIngredients(
   Array.isArray(ingredientData)
   ?
   ingredientData
