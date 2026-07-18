@@ -43,76 +43,68 @@ loadData();
 
 async function loadData(){
 
+  try{
 
-try{
+    const res = await fetch(
+      "http://localhost:3001/ingredients"
+    );
 
+    const data = await res.json();
 
-const res =
-await fetch(
-"https://smart-fridge-99dz.onrender.com/ingredients"
-);
-
-
-const data =
-await res.json();
+    console.log("INGREDIENTS:", data);
 
 
+    setIngredients(
 
-setIngredients(
+      Array.isArray(data)
 
-Array.isArray(data)
+      ?
 
-?
+      data
 
-data
+      :
 
-:
+      data.data ?? []
 
-data.data ?? []
-
-);
+    );
 
 
 
 
 
-const expRes =
-await fetch(
-"http://localhost:3001/ingredients/expiring"
-);
+    const expRes = await fetch(
+      "https://smart-fridge-99dz.onrender.com/ingredients/expiring"
+    );
+
+
+    const expData = await expRes.json();
+
+
+    setExpiring(
+
+      Array.isArray(expData)
+
+      ?
+
+      expData
+
+      :
+
+      expData.data ?? []
+
+    );
 
 
 
-const expData =
-await expRes.json();
+  }catch(error){
 
+    console.error(error);
 
+    setIngredients([]);
 
-setExpiring(
+    setExpiring([]);
 
-Array.isArray(expData)
-
-?
-
-expData
-
-:
-
-expData.data ?? []
-
-);
-
-
-
-
-}catch(error){
-
-
-console.error(error);
-
-
-}
-
+  }
 
 }
 
@@ -151,7 +143,7 @@ if(editId){
 
 await fetch(
 
-`http://localhost:3001/ingredients/${editId}`,
+`https://smart-fridge-99dz.onrender.com/ingredients,
 
 {
 
