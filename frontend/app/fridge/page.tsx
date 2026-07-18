@@ -496,7 +496,7 @@ return matchSearch && matchCategory;
 return(
 
 
-<main className="min-h-screen bg-gray-100 p-10">
+<main className="min-h-screen bg-[#F5F5F4] p-10">
 
 
 <div className="max-w-6xl mx-auto">
@@ -702,7 +702,7 @@ onChange={e=>setExpiryDate(e.target.value)}
 
 onClick={saveIngredient}
 
-className="bg-blue-500 text-white px-5 py-2 rounded mt-5"
+className="bg-[#1E4620] hover:bg-[#1E4620] text-white px-5 py-2 rounded mt-5"
 
 >
 

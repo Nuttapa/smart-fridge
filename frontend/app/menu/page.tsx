@@ -152,7 +152,7 @@ export default function MenuPage(){
 return(
 
 
-<main className="min-h-screen bg-gray-100 p-10">
+<main className="min-h-screen bg-[#F5F5F4] p-10">
 
 
 <div className="max-w-5xl mx-auto">
@@ -190,7 +190,7 @@ return(
 
 onClick={recommendMenu}
 
-className="bg-green-500 text-white px-6 py-3 rounded-xl mt-6 font-bold"
+className="bg-[#1E4620] text-white px-6 py-3 rounded-xl mt-6 font-bold"
 
 >
 
@@ -456,7 +456,7 @@ width:`${menu.score ?? 0}%`
 
 onClick={recommendMenu}
 
-className="bg-blue-500 text-white px-5 py-3 rounded-xl mt-8"
+className="bg-[#A7C7D9] text-gray px-5 py-3 rounded-xl mt-8"
 
 >
 

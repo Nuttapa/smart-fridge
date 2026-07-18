@@ -127,7 +127,7 @@ export default function Home(){
   return(
 
 
-    <main className="min-h-screen bg-gray-100 p-10">
+    <main className="min-h-screen bg-[#F5F5F4] p-10">
 
 
       <div className="max-w-6xl mx-auto">
@@ -157,7 +157,7 @@ export default function Home(){
 
 
 
-          <div className="bg-white rounded-2xl shadow p-6">
+          <div className="bg-white rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.06)] p-6 border border-stone-100 hover:-translate-y-1 transition-all duration-300">
 
 
             <p className="text-gray-500">
@@ -181,7 +181,7 @@ export default function Home(){
 
 
 
-          <div className="bg-white rounded-2xl shadow p-6">
+          <div className="bg-white rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.06)] p-6 border border-stone-100 hover:-translate-y-1 transition-all duration-300">
 
 
             <p className="text-gray-500">
@@ -206,7 +206,7 @@ export default function Home(){
 
 
 
-          <div className="bg-white rounded-2xl shadow p-6">
+          <div className="bg-white rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.06)] p-6 border border-stone-100 hover:-translate-y-1 transition-all duration-300">
 
 
             <p className="text-gray-500">
@@ -221,7 +221,7 @@ export default function Home(){
 
               href="/menu"
 
-              className="inline-block mt-4 bg-green-500 text-white px-5 py-2 rounded-xl"
+              className="inline-block mt-4 bg-[#1E4620] hover:bg-[#1E4620] text-white px-5 py-2 rounded-xl"
 
             >
 
@@ -244,14 +244,11 @@ export default function Home(){
 
 
 
-        <div className="bg-white rounded-2xl shadow p-6 mt-8">
+        <div className="bg-[#1E4620] rounded-2xl shadow-[0_8_30px_rgba(0,0,0,0.06)] p-6 border border-[#fffff] mt-8">
 
-
-          <h2 className="text-2xl font-bold">
-
-            📂 จำนวนตามหมวดหมู่
-
-          </h2>
+        <h2 className="text-2xl font-bold text-white">
+          📂 จำนวนตามหมวดหมู่
+        </h2>
 
 
 
@@ -266,12 +263,8 @@ export default function Home(){
 
 
                 <div
-
-                  key={cat}
-
-                  className="border rounded-xl p-4"
-
-
+                key={cat}
+                className="bg-[#ffffff] rounded-xl p-4 border border-white/20 hover:-translate-y-1 transition-all"
                 >
 
 
@@ -325,13 +318,11 @@ export default function Home(){
 
 
 
-        <div className="bg-white rounded-2xl shadow p-6 mt-8">
+        <div className="bg-[#1E4620] rounded-2xl shadow p-6 mt-8">
 
 
-          <h2 className="text-2xl font-bold text-red-500">
-
-            ⚠️ วัตถุดิบใกล้หมดอายุ
-
+          <h2 className="text-2xl font-bold text-white">
+          ⚠️ วัตถุดิบใกล้หมดอายุ
           </h2>
 
 
@@ -344,11 +335,8 @@ export default function Home(){
 
             ?
 
-
-            <p className="mt-4 text-gray-500">
-
+            <p className="mt-4 text-white">
               ไม่มีวัตถุดิบใกล้หมดอายุ
-
             </p>
 
 
@@ -365,12 +353,8 @@ export default function Home(){
 
 
                   <div
-
-                    key={item._id}
-
-                    className="border rounded-xl p-4 flex justify-between"
-
-
+                  key={item._id}
+                  className="bg-[#ffffff] rounded-xl p-4 flex justify-between border border-white/20"
                   >
 
 

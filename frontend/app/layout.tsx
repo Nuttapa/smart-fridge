@@ -25,7 +25,7 @@ export default function RootLayout({
       <body>
 
 
-        <nav className="bg-green-600 text-white px-8 py-4 shadow">
+        <nav className="bg-[#1E4620] text-white px-8 py-4 shadow">
 
 
           <div className="max-w-6xl mx-auto flex justify-between items-center">
@@ -35,7 +35,7 @@ export default function RootLayout({
               href="/"
               className="text-2xl font-bold"
             >
-              🧊 Smart Fridge
+            Smart Fridge
             </Link>
 
 
