@@ -30,9 +30,11 @@ export default function Home(){
 
 
       const res = await fetch(
-        "http://localhost:3001/ingredients"
+        "https://smart-fridge-99dz.onrender.com/ingredients",
+        {
+          cache:"no-store"
+        }
       );
-
 
       const data = await res.json();
 
@@ -58,7 +60,10 @@ export default function Home(){
 
 
       const expRes = await fetch(
-        "http://localhost:3001/ingredients/expiring"
+        "https://smart-fridge-99dz.onrender.com/ingredients/expiring",
+        {
+          cache:"no-store"
+        }
       );
 
 

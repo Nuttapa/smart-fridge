@@ -28,7 +28,7 @@ export default function MenuPage(){
 
       const ingredientRes =
         await fetch(
-          "http://localhost:3001/ingredients"
+          "https://smart-fridge-99dz.onrender.comingredients"
         );
 
 
