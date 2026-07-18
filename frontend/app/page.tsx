@@ -13,17 +13,14 @@ export default function Home(){
 
 
 
- useEffect(()=>{
+useEffect(()=>{
 
   const token = localStorage.getItem("token");
 
 
   if(!token){
-
     router.push("/login");
-
     return;
-
   }
 
 
@@ -35,43 +32,50 @@ export default function Home(){
 
 
 
-
   async function loadDashboard(){
 
+  const token = localStorage.getItem("token");
 
-    try{
-
-
-      const token = localStorage.getItem("token");
+  console.log("TOKEN FROM STORAGE =", token);
 
 
-      const res = await fetch(
+  if(!token){
+    router.push("/login");
+    return;
+  }
+
+
+  try{
+
+
+    const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/ingredients`,
       {
         headers:{
-          Authorization:`Bearer ${token}`
-        }
+          "Authorization": `Bearer ${token}`,
+        },
+        cache:"no-store"
       }
-      );
+    );
 
-      const data = await res.json();
 
-      console.log("INGREDIENT DATA =", data);
+    const data = await res.json();
+
+    console.log("STATUS =", res.status);
+    console.log("DATA =", data);
+
+      const ingredientData = await res.json();
+
+console.log("INGREDIENT DATA =", ingredientData);
 
 
       setIngredients(
-
-        Array.isArray(data)
-
-        ?
-
-        data
-
-        :
-
-        data.data ?? []
-
-      );
+  Array.isArray(ingredientData)
+  ?
+  ingredientData
+  :
+  ingredientData.data ?? []
+);
 
 
 
