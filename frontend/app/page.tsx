@@ -17,28 +17,23 @@ useEffect(()=>{
 
   const token = localStorage.getItem("token");
 
-
   if(!token){
     router.push("/login");
     return;
   }
 
-console.log("API URL =", process.env.NEXT_PUBLIC_API_URL);
-  
-loadDashboard();
+  console.log("API URL =", process.env.NEXT_PUBLIC_API_URL);
 
+  loadDashboard();
 
 },[]);
 
 
-
-
-  async function loadDashboard(){
+async function loadDashboard(){
 
   const token = localStorage.getItem("token");
 
   console.log("TOKEN FROM STORAGE =", token);
-
 
   if(!token){
     router.push("/login");
@@ -48,87 +43,72 @@ loadDashboard();
 
   try{
 
+    const api = process.env.NEXT_PUBLIC_API_URL;
+
+    console.log("CALL API =", api);
+
 
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/ingredients`,
-        {
-          headers:{
-            Authorization:`Bearer ${token}`
-          }
+      `${api}/ingredients`,
+      {
+        headers:{
+          Authorization:`Bearer ${token}`
         }
-      );
+      }
+    );
 
 
     const ingredientData = await res.json();
 
-console.log("STATUS =", res.status);
-console.log("DATA =", ingredientData);
+
+    console.log("STATUS =", res.status);
+    console.log("DATA =", ingredientData);
 
 
-if(!res.ok){
-  console.log("ERROR =", ingredientData);
-  return;
-}
-
-
-setIngredients(
-  Array.isArray(ingredientData)
-  ?
-  ingredientData
-  :
-  ingredientData.data ?? []
-);
-
-
-
-
-
-      const expRes = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/ingredients/expiring`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          },
-          cache: "no-store"
-        }
-      );
-
-
-      const expData = await expRes.json();
-
-
-
-      setExpiring(
-
-        Array.isArray(expData)
-
-        ?
-
-        expData
-
-        :
-
-        expData.data ?? []
-
-      );
-
-
-
-    }catch(error){
-
-
-      console.error(error);
-
-
-      setIngredients([]);
-
-      setExpiring([]);
-
-
+    if(!res.ok){
+      console.log("ERROR =", ingredientData);
+      return;
     }
 
 
+    setIngredients(
+      Array.isArray(ingredientData)
+      ? ingredientData
+      : ingredientData.data ?? []
+    );
+
+
+    const expRes = await fetch(
+      `${api}/ingredients/expiring`,
+      {
+        headers:{
+          Authorization:`Bearer ${token}`
+        },
+        cache:"no-store"
+      }
+    );
+
+
+    const expData = await expRes.json();
+
+
+    setExpiring(
+      Array.isArray(expData)
+      ? expData
+      : expData.data ?? []
+    );
+
+
+  }catch(error){
+
+    console.error(error);
+
+    setIngredients([]);
+    setExpiring([]);
+
   }
+
+}
   function logout(){
 
     localStorage.removeItem("token");
