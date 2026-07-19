@@ -2,80 +2,145 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+
+export default function Navbar() {
+
+  const router = useRouter();
+
+  const [token, setToken] = useState<string | null>(null);
 
 
-export default function Navbar(){
+  useEffect(() => {
+    setToken(localStorage.getItem("token"));
+  }, []);
 
-const router = useRouter();
 
+  function logout() {
 
-function goProtectedPage(path:string){
+    localStorage.removeItem("token");
 
-  const token = localStorage.getItem("token");
+    setToken(null);
 
-  if(!token){
     router.push("/login");
-    return;
+
   }
 
-  router.push(path);
-
-}
 
 
-return(
+  return (
 
-<nav className="bg-white shadow p-4">
+    <nav className="bg-white shadow p-4">
 
-
-<div className="max-w-6xl mx-auto flex justify-between items-center">
-
-
-<h1 className="text-2xl font-bold">
-🧊 Smart Fridge
-</h1>
+      <div className="max-w-6xl mx-auto flex justify-between items-center">
 
 
-
-<div className="flex gap-5">
-
-
-<Link
-href="/"
-className="hover:text-green-600"
->
-🏠 หน้าหลัก
-</Link>
+        <Link 
+          href="/"
+          className="text-2xl font-bold"
+        >
+          🧊 Smart Fridge
+        </Link>
 
 
 
-<button
-onClick={()=>goProtectedPage("/fridge")}
-className="hover:text-green-600"
->
-🥬 ตู้เย็น
-</button>
+        <div className="flex gap-5 items-center">
+
+
+          <Link
+            href="/"
+            className="hover:text-green-600"
+          >
+            🏠 หน้าหลัก
+          </Link>
 
 
 
-<button
-onClick={()=>goProtectedPage("/menu")}
-className="hover:text-green-600"
->
-🍳 เมนู
-</button>
+          {token && (
+            <>
 
 
-</div>
+              <Link
+                href="/fridge"
+                className="hover:text-green-600"
+              >
+                🥬 ตู้เย็น
+              </Link>
 
 
 
-</div>
+              <Link
+                href="/menu"
+                className="hover:text-green-600"
+              >
+                🍳 เมนู
+              </Link>
 
 
-</nav>
+
+              <button
+
+                onClick={logout}
+
+                className="
+                  bg-red-500
+                  text-white
+                  px-4
+                  py-2
+                  rounded-xl
+                  hover:bg-red-600
+                "
+
+              >
+                ออกจากระบบ
+              </button>
 
 
-);
+            </>
+          )}
+
+
+
+          {!token && (
+            <>
+
+              <Link
+                href="/login"
+                className="
+                  text-[#1E4620]
+                  font-bold
+                "
+              >
+                เข้าสู่ระบบ
+              </Link>
+
+
+              <Link
+                href="/register"
+                className="
+                  bg-[#1E4620]
+                  text-white
+                  px-4
+                  py-2
+                  rounded-xl
+                "
+              >
+                สมัครสมาชิก
+              </Link>
+
+            </>
+          )}
+
+
+
+        </div>
+
+
+      </div>
+
+
+    </nav>
+
+  );
 
 }
