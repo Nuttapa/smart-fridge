@@ -21,7 +21,6 @@ export default function FridgePage() {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
-      router.push("/login");
       return;
     }
     loadData();
@@ -31,7 +30,6 @@ export default function FridgePage() {
     try {
       const token = localStorage.getItem("token");
       if (!token) {
-        router.push("/login");
         return;
       }
 

@@ -45,7 +45,6 @@ useEffect(()=>{
   const token = localStorage.getItem("token");
 
   if(!token){
-    router.push("/login");
     return;
   }
 

@@ -17,7 +17,6 @@ export default function MenuPage(){
 
     if(!token){
 
-      router.push("/login");
 
     }
 
