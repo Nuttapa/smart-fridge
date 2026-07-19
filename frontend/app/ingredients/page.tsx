@@ -60,7 +60,7 @@ async function loadIngredients(){
     const token = localStorage.getItem("token");
 
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/ingredients`,
+      "https://smart-fridge-99dz.onrender.com/ingredients",
       {
         headers:{
           Authorization:`Bearer ${token}`
@@ -147,7 +147,7 @@ body:JSON.stringify(body)
 
 await fetch(
 
-`${process.env.NEXT_PUBLIC_API_URL}/ingredients`,
+"https://smart-fridge-99dz.onrender.com/ingredients",
 
 {
 

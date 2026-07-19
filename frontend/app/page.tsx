@@ -49,7 +49,7 @@ useEffect(()=>{
 
 
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/ingredients`,
+      "https://smart-fridge-99dz.onrender.com/ingredients",
       {
         headers:{
           "Authorization": `Bearer ${token}`,
@@ -84,7 +84,7 @@ setIngredients(
 
 
       const expRes = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/ingredients/expiring`,
+        "https://smart-fridge-99dz.onrender.com/ingredients/expiring",
         {
           headers:{
             Authorization:`Bearer ${token}`
