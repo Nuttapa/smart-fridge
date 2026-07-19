@@ -18,13 +18,20 @@ export default function FridgePage() {
   const [expiryDate, setExpiryDate] = useState("");
   const [editId, setEditId] = useState<string | null>(null);
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      return;
-    }
-    loadData();
-  }, []);
+  useEffect(()=>{
+
+  const token = localStorage.getItem("token");
+
+  console.log("FRIDGE TOKEN =", token);
+
+  if (!token) {
+    window.location.href = "/login";
+    return;
+  }
+
+  loadData();
+
+},[]);
 
   async function loadData() {
     try {

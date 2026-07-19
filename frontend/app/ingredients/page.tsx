@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 
 export default function IngredientsPage(){
 
+console.log("INGREDIENT PAGE RUN");
+
 const router = useRouter();
 
 const [ingredients,setIngredients]
@@ -44,7 +46,11 @@ useEffect(()=>{
 
   const token = localStorage.getItem("token");
 
+  console.log("TOKEN =", token);
+
   if(!token){
+    console.log("NO TOKEN → GO LOGIN");
+    router.replace("/login");
     return;
   }
 
@@ -314,12 +320,11 @@ return(
 
 
 
-
-<h1 className="text-4xl font-bold mb-8">
-
+<h1 className="text-4xl font-bold">
 🥬 จัดการวัตถุดิบ
-
 </h1>
+
+
 
 
 

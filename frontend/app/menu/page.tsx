@@ -10,17 +10,13 @@ export default function MenuPage(){
   const [menu,setMenu] = useState<any>(null);
 
 
-  useEffect(()=>{
+  useEffect(() => {
+  const token = localStorage.getItem("token");
 
-    const token = localStorage.getItem("token");
-
-
-    if(!token){
-
-
-    }
-
-  },[]);
+  if (!token) {
+    router.push("/login");
+  }
+}, []);
 
 
   const [loading,setLoading] = useState(false);

@@ -40,7 +40,7 @@ export default function LoginPage() {
 
 
       const data = await res.json();
-
+      console.log("LOGIN DATA =", data);
 
       if(!res.ok){
         throw new Error(
@@ -142,7 +142,6 @@ export default function LoginPage() {
             ">
               Email
             </label>
-
 
             <input
 

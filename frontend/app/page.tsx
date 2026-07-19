@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function Home() {
+  console.log("HOME PAGE RUN");
   const router = useRouter();
   const [ingredients, setIngredients] = useState<any[]>([]);
   const [expiring, setExpiring] = useState<any[]>([]);
@@ -14,11 +15,12 @@ export default function Home() {
 useEffect(() => {
   const storedToken = localStorage.getItem("token");
 
+  console.log("DASHBOARD TOKEN =", storedToken);
+
   setToken(storedToken);
   setLoading(false);
 
   if (storedToken) {
-    console.log("API URL =", process.env.NEXT_PUBLIC_API_URL);
     loadDashboard(storedToken);
   }
 
@@ -70,10 +72,10 @@ useEffect(() => {
     }
   }
 
-  function logout() {
-    localStorage.removeItem("token");
-    
-  }
+function logout() {
+  localStorage.removeItem("token");
+  window.location.href = "/login";
+}
 
   const categories = [
     "ผัก",

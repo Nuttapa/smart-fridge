@@ -1,9 +1,26 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 
 export default function Navbar(){
+
+const router = useRouter();
+
+
+function goProtectedPage(path:string){
+
+  const token = localStorage.getItem("token");
+
+  if(!token){
+    router.push("/login");
+    return;
+  }
+
+  router.push(path);
+
+}
 
 
 return(
@@ -32,21 +49,21 @@ className="hover:text-green-600"
 
 
 
-<Link
-href="/fridge"
+<button
+onClick={()=>goProtectedPage("/fridge")}
 className="hover:text-green-600"
 >
 🥬 ตู้เย็น
-</Link>
+</button>
 
 
 
-<Link
-href="/menu"
+<button
+onClick={()=>goProtectedPage("/menu")}
 className="hover:text-green-600"
 >
 🍳 เมนู
-</Link>
+</button>
 
 
 </div>
@@ -60,6 +77,5 @@ className="hover:text-green-600"
 
 
 );
-
 
 }
