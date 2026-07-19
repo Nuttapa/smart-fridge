@@ -3,9 +3,10 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const router = useRouter();
 
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -13,68 +14,55 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
 
 
-  async function handleLogin(e: React.FormEvent) {
+  async function handleRegister(e: React.FormEvent) {
     e.preventDefault();
 
     setError("");
     setLoading(true);
 
-
     try {
-
       const res = await fetch(
-         `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/register`,
         {
-          method:"POST",
-
-          headers:{
-            "Content-Type":"application/json",
-          },
-
-          body:JSON.stringify({
+            method: "POST",
+            headers: {
+            "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+            username,
             email,
             password,
-          }),
+            }),
         }
-      );
+        );
 
 
       const data = await res.json();
 
 
-      if(!res.ok){
-        throw new Error(
-          data.message || "Login failed"
-        );
+      if (!res.ok) {
+        throw new Error(data.message || "Register failed");
       }
 
 
-      localStorage.setItem(
-        "token",
-        data.access_token
-      );
+      alert("สมัครสมาชิกสำเร็จ กรุณาเข้าสู่ระบบ");
+
+      router.push("/login");
 
 
-      router.push("/");
+    } catch (err: any) {
 
-
-    } catch(err:any){
-
-      setError(
-        err.message
-      );
+      setError(err.message);
 
     } finally {
 
       setLoading(false);
 
     }
-
   }
 
 
   return (
-
     <main className="
       min-h-screen
       bg-[#F5F5F4]
@@ -83,7 +71,6 @@ export default function LoginPage() {
       justify-center
       p-6
     ">
-
 
       <div className="
         bg-white
@@ -97,10 +84,7 @@ export default function LoginPage() {
 
         <div className="text-center mb-8">
 
-          <div className="
-            text-5xl
-            mb-3
-          ">
+          <div className="text-5xl mb-3">
             🥬
           </div>
 
@@ -114,40 +98,28 @@ export default function LoginPage() {
           </h1>
 
 
-          <p className="
-            text-gray-500
-            mt-2
-          ">
-            เข้าสู่ระบบจัดการตู้เย็น
+          <p className="text-gray-500 mt-2">
+            สร้างบัญชีเพื่อจัดการตู้เย็น
           </p>
-
 
         </div>
 
 
 
 
-
         <form
-          onSubmit={handleLogin}
+          onSubmit={handleRegister}
           className="space-y-4"
         >
 
 
           <div>
-
-            <label className="
-              text-sm
-              font-medium
-            ">
-              Email
+            <label className="text-sm font-medium">
+              Username
             </label>
 
-
             <input
-
-              type="email"
-
+              type="text"
               className="
                 w-full
                 border
@@ -158,39 +130,48 @@ export default function LoginPage() {
                 focus:ring-2
                 focus:ring-green-700
               "
-
-              placeholder="example@email.com"
-
-              value={email}
-
-              onChange={
-                e=>setEmail(e.target.value)
-              }
-
+              placeholder="ชื่อผู้ใช้"
+              value={username}
+              onChange={(e)=>setUsername(e.target.value)}
             />
-
-
           </div>
 
 
+
+          <div>
+            <label className="text-sm font-medium">
+              Email
+            </label>
+
+            <input
+              type="email"
+              className="
+                w-full
+                border
+                rounded-xl
+                p-3
+                mt-1
+                focus:outline-none
+                focus:ring-2
+                focus:ring-green-700
+              "
+              placeholder="example@email.com"
+              value={email}
+              onChange={(e)=>setEmail(e.target.value)}
+            />
+
+          </div>
 
 
 
 
           <div>
-
-            <label className="
-              text-sm
-              font-medium
-            ">
+            <label className="text-sm font-medium">
               Password
             </label>
 
-
             <input
-
               type="password"
-
               className="
                 w-full
                 border
@@ -201,27 +182,18 @@ export default function LoginPage() {
                 focus:ring-2
                 focus:ring-green-700
               "
-
               placeholder="••••••••"
-
               value={password}
-
-              onChange={
-                e=>setPassword(e.target.value)
-              }
-
+              onChange={(e)=>setPassword(e.target.value)}
             />
 
-
           </div>
-
 
 
 
 
           {
             error && (
-
               <div className="
                 bg-red-100
                 text-red-700
@@ -229,11 +201,8 @@ export default function LoginPage() {
                 rounded-xl
                 text-sm
               ">
-
                 {error}
-
               </div>
-
             )
           }
 
@@ -242,9 +211,7 @@ export default function LoginPage() {
 
 
           <button
-
             disabled={loading}
-
             className="
               w-full
               bg-[#1E4620]
@@ -255,22 +222,19 @@ export default function LoginPage() {
               font-bold
               transition
             "
-
           >
 
             {
               loading
-              ?
-              "กำลังเข้าสู่ระบบ..."
-              :
-              "เข้าสู่ระบบ"
+              ? "กำลังสมัคร..."
+              : "สมัครสมาชิก"
             }
-
 
           </button>
 
 
         </form>
+
 
 
 
@@ -282,15 +246,26 @@ export default function LoginPage() {
           mt-6
         ">
 
-          Smart Fridge Management System
+          มีบัญชีแล้ว?{" "}
+
+          <button
+            type="button"
+            onClick={()=>router.push("/login")}
+            className="
+              text-[#1E4620]
+              font-bold
+            "
+          >
+            เข้าสู่ระบบ
+          </button>
 
         </p>
+
 
 
       </div>
 
 
     </main>
-
   );
 }

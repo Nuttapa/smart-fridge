@@ -23,8 +23,9 @@ useEffect(()=>{
     return;
   }
 
-
-  loadDashboard();
+console.log("API URL =", process.env.NEXT_PUBLIC_API_URL);
+  
+loadDashboard();
 
 
 },[]);
@@ -49,14 +50,13 @@ useEffect(()=>{
 
 
     const res = await fetch(
-      "https://smart-fridge-99dz.onrender.com/ingredients",
-      {
-        headers:{
-          "Authorization": `Bearer ${token}`,
-        },
-        cache:"no-store"
-      }
-    );
+      `${process.env.NEXT_PUBLIC_API_URL}/ingredients`,
+        {
+          headers:{
+            Authorization:`Bearer ${token}`
+          }
+        }
+      );
 
 
     const ingredientData = await res.json();
@@ -84,12 +84,12 @@ setIngredients(
 
 
       const expRes = await fetch(
-        "https://smart-fridge-99dz.onrender.com/ingredients/expiring",
+        `${process.env.NEXT_PUBLIC_API_URL}/ingredients/expiring`,
         {
-          headers:{
-            Authorization:`Bearer ${token}`
+          headers: {
+            Authorization: `Bearer ${token}`
           },
-          cache:"no-store"
+          cache: "no-store"
         }
       );
 

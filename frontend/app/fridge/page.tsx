@@ -35,8 +35,8 @@ export default function FridgePage() {
         return;
       }
 
-      // 1. Fetch วัตถุดิบทั้งหมด
-      const res = await fetch("https://smart-fridge-99dz.onrender.com/ingredients", {
+      // 1. Fetch วัตถุดิบทั้งหมด (แก้ไข URL เป็น String Template ที่ถูกต้อง)
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/ingredients`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -53,15 +53,15 @@ export default function FridgePage() {
       // =====================================
 
       const ingredientList = Array.isArray(data)
-      ? data
-      : data.data ?? [];
+        ? data
+        : data.data ?? [];
 
-    console.log("SET INGREDIENTS =", ingredientList);
+      console.log("SET INGREDIENTS =", ingredientList);
 
-    setIngredients(ingredientList);
+      setIngredients(ingredientList);
 
-      // 2. Fetch วัตถุดิบที่กำลังจะหมดอายุ
-      const expRes = await fetch("https://smart-fridge-99dz.onrender.com/ingredients/expiring", {
+      // 2. Fetch วัตถุดิบที่กำลังจะหมดอายุ (แก้ไข URL เป็น String Template ที่ถูกต้อง)
+      const expRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/ingredients/expiring`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -98,7 +98,8 @@ export default function FridgePage() {
 
     try {
       if (editId) {
-        await fetch(`https://smart-fridge-99dz.onrender.com/ingredients/${editId}`, {
+        // 3. PUT (แก้ไข URL เอา https:// และ /auth/login ออก)
+        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/ingredients/${editId}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -107,7 +108,8 @@ export default function FridgePage() {
           body: JSON.stringify(body),
         });
       } else {
-        await fetch("https://smart-fridge-99dz.onrender.com/ingredients", {
+        // 4. POST (แก้ไข URL ให้เรียบร้อย)
+        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/ingredients`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -137,7 +139,8 @@ export default function FridgePage() {
     if (!confirm("คุณแน่ใจหรือไม่ว่าต้องการลบวัตถุดิบนี้?")) return;
     
     const token = localStorage.getItem("token");
-    await fetch(`https://smart-fridge-99dz.onrender.com/ingredients/${id}`, {
+    // 5. DELETE (ลบ string ขยะที่ซ้อนอยู่ออกทั้งหมดให้เหลือแค่ชุดตัวแปร env)
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/ingredients/${id}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -156,73 +159,70 @@ export default function FridgePage() {
     setExpiryDate("");
   }
 
- function getExpireStatus(date: string) {
-  if (!date) {
+  function getExpireStatus(date: string) {
+    if (!date) {
+      return {
+        text: "ไม่มีวันหมดอายุ",
+        color: "bg-gray-100",
+      };
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const expiry = new Date(date);
+    expiry.setHours(0, 0, 0, 0);
+
+    const diff = Math.ceil(
+      (expiry.getTime() - today.getTime()) /
+        (1000 * 60 * 60 * 24)
+    );
+
+    if (diff < 0) {
+      return {
+        text: "หมดอายุแล้ว ❌",
+        color: "bg-gray-200 text-gray-800",
+      };
+    }
+
+    if (diff === 0) {
+      return {
+        text: "หมดอายุวันนี้ 🔴",
+        color: "bg-red-100 text-red-900",
+      };
+    }
+
+    if (diff <= 3) {
+      return {
+        text: `🔴 เหลือ ${diff} วัน`,
+        color: "bg-red-50 text-red-900",
+      };
+    }
+
+    if (diff <= 7) {
+      return {
+        text: `🟡 เหลือ ${diff} วัน`,
+        color: "bg-yellow-50 text-yellow-900",
+      };
+    }
+
     return {
-      text: "ไม่มีวันหมดอายุ",
-      color: "bg-gray-100",
+      text: `🟢 เหลือ ${diff} วัน`,
+      color: "bg-green-50 text-green-900",
     };
   }
 
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  const filteredIngredients = ingredients.filter((item) => {
+    const itemName = (item.name ?? "").toLowerCase();
+    const searchText = search.toLowerCase();
+    const matchSearch = itemName.includes(searchText);
+    const matchCategory =
+      filterCategory === "ทั้งหมด"
+        ? true
+        : item.category === filterCategory;
 
-  const expiry = new Date(date);
-  expiry.setHours(0, 0, 0, 0);
-
-  const diff = Math.ceil(
-    (expiry.getTime() - today.getTime()) /
-      (1000 * 60 * 60 * 24)
-  );
-
-  if (diff < 0) {
-    return {
-      text: "หมดอายุแล้ว ❌",
-      color: "bg-gray-200 text-gray-800",
-    };
-  }
-
-  if (diff === 0) {
-    return {
-      text: "หมดอายุวันนี้ 🔴",
-      color: "bg-red-100 text-red-900",
-    };
-  }
-
-  if (diff <= 3) {
-    return {
-      text: `🔴 เหลือ ${diff} วัน`,
-      color: "bg-red-50 text-red-900",
-    };
-  }
-
-  if (diff <= 7) {
-    return {
-      text: `🟡 เหลือ ${diff} วัน`,
-      color: "bg-yellow-50 text-yellow-900",
-    };
-  }
-
-  return {
-    text: `🟢 เหลือ ${diff} วัน`,
-    color: "bg-green-50 text-green-900",
-  };
-}
-
-const filteredIngredients = ingredients.filter((item) => {
-  const itemName = (item.name ?? "").toLowerCase();
-
-  const searchText = search.toLowerCase();
-
-  const matchSearch = itemName.includes(searchText);
-
-  const matchCategory =
-    filterCategory === "ทั้งหมด"
-      ? true
-      : item.category === filterCategory;
-
-  return matchSearch && matchCategory;
-});
+    return matchSearch && matchCategory;
+  });
 
   return (
     <main className="min-h-screen bg-[#F5F5F4] p-10">
